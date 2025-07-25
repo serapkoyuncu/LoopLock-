@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoopLock - Akıllı Kasa Kilidi Sistemi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .presentation-container {
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(26, 26, 26, 0.95));
+            border-bottom: 2px solid rgba(128, 128, 128, 0.2);
+        }
+
+        /* Hero Section */
+        .hero-slide {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(128, 128, 128, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(64, 64, 64, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(192, 192, 192, 0.05) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            position: relative;
+            max-width: 1200px;
+            padding: 0 2rem;
+        }
+
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #808080, #c0c0c0, #a0a0a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(128, 128, 128, 0.3)); }
+            to { filter: drop-shadow(0 0 30px rgba(128, 128, 128, 0.6)); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.8rem;
+            color: #a0a0a0;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            color: #888888;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #808080, #606060);
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-radius: 50px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(128, 128, 128, 0.4);
+            background: linear-gradient(135deg, #909090, #707070);
+        }
+
+        /* Content Slides */
+        .content-slide {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .slide-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #c0c0c0;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .slide-subtitle {
+            font-size: 1.5rem;
+            color: #a0a0a0;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        /* Problem-Solution Grid */
+        .problem-solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 3rem;
+            margin: 3rem 0;
+        }
+
+        .problem-card, .solution-card {
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 2px solid rgba(128, 128, 128, 0.2);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .problem-card:hover, .solution-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(128, 128, 128, 0.5);
+            box-shadow: 0 15px 40px rgba(128, 128, 128, 0.2);
+        }
+
+        .problem-card h3 {
+            color: #ff6b6b;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .solution-card h3 {
+            color: #90c695;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-card:hover {
+            border-color: rgba(128, 128, 128, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            color: #a0a0a0;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        /* Market Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(128, 128, 128, 0.1), rgba(64, 64, 64, 0.1));
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid rgba(128, 128, 128, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #c0c0c0;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+
+        /* Investment Section */
+        .investment-highlight {
+            background: linear-gradient(135deg, rgba(128, 128, 128, 0.1), rgba(160, 160, 160, 0.1));
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem 0;
+            text-align: center;
+            border: 2px solid rgba(128, 128, 128, 0.3);
+        }
+
+        .investment-amount {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #c0c0c0;
+            margin-bottom: 1rem;
+        }
+
+        .investment-terms {
+            font-size: 1.3rem;
+            color: #a0a0a0;
+            margin-bottom: 2rem;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: rgba(26, 26, 26, 0.9);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem 0;
+            border: 2px solid rgba(128, 128, 128, 0.3);
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .contact-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .contact-item a {
+            color: #c0c0c0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-item a:hover {
+            color: #ffffff;
+        }
+
+        /* Navigation */
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(128, 128, 128, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: #c0c0c0;
+            transform: scale(1.5);
+        }
+
+        /* Development Status Badge */
+        .development-badge {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: #ffffff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 1rem 0;
+            display: inline-block;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            margin: 5% auto;
+            padding: 3rem;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 20px;
+            border: 2px solid rgba(128, 128, 128, 0.3);
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 2rem;
+            top: 1.5rem;
+        }
+
+        .close:hover {
+            color: #fff;
+        }
+
+        /* Business Cards */
+        .business-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .business-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(128, 128, 128, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .slide-title {
+                font-size: 2.5rem;
+            }
+            
+            .problem-solution-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-dots {
+                display: none;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Navigation Dots -->
+        <div class="nav-dots">
+            <div class="nav-dot active" onclick="scrollToSlide(0)"></div>
+            <div class="nav-dot" onclick="scrollToSlide(1)"></div>
+            <div class="nav-dot" onclick="scrollToSlide(2)"></div>
+            <div class="nav-dot" onclick="scrollToSlide(3)"></div>
+            <div class="nav-dot" onclick="scrollToSlide(4)"></div>
+            <div class="nav-dot" onclick="scrollToSlide(5)"></div>
+        </div>
+
+        <!-- Slide 1: Hero -->
+        <div class="slide hero-slide" id="slide-0">
+            <div class="hero-content">
+                <h1 class="hero-title">LoopLock</h1>
+                <h2 class="hero-subtitle">Geleceğin Akıllı Kasa Kilidi</h2>
+                <div class="development-badge">🚧 MVP Geliştirme Sürecinde</div>
+                <p class="hero-description">
+                    IoT tabanlı, düşük güç tüketimli, GSM ve Wi-Fi destekli akıllı kilit sistemi geliştiriyoruz. Çelik para kasalarınızı dijital çağa taşıyacak, %85 oranında hırsızlık girişimlerini erken tespit edebilecek teknoloji üzerinde çalışıyoruz.
+                </p>
+                <button class="cta-button" onclick="scrollToSlide(1)">Yatırım Fırsatını Keşfedin</button>
+            </div>
+        </div>
+
+        <!-- Slide 2: Problem & Solution -->
+        <div class="slide" id="slide-1">
+            <div class="content-slide">
+                <h2 class="slide-title">Çözmeyi Hedeflediğimiz Kritik Problemler</h2>
+                <div class="problem-solution-grid">
+                    <div class="problem-card">
+                        <h3>🚨 Problem: Dijital Eksiklik</h3>
+                        <p>Geleneksel kasa sistemleri yalnızca fiziksel koruma sunar. Hırsızlık girişimleri anlık olarak fark edilemez, geç müdahalelere yol açar.</p>
+                    </div>
+                    <div class="solution-card">
+                        <h3>✅ LoopLock Yaklaşımımız</h3>
+                        <p>Geliştirmekte olduğumuz darbe ve hareket sensörleriyle tehditleri anında tespit eden sistem. Wi-Fi/GSM üzerinden gerçek zamanlı bildirim sistemi tasarlıyoruz.</p>
+                    </div>
+                    
+                    <div class="problem-card">
+                        <h3>🔍 Problem: Takip Eksikliği</h3>
+                        <p>Kasa üzerinde kimin ne zaman işlem yaptığı takip edilemez. Kurumsal yapılarda güvenlik açıkları ve yetki belirsizlikleri yaratır.</p>
+                    </div>
+                    <div class="solution-card">
+                        <h3>📊 LoopLock Hedefimiz</h3>
+                        <p>Tüm aktiviteleri sensörlerle algılayarak mobil uygulamaya ileten sistem. Her işlemin loglandığı, uzaktan denetim ve yetki kontrolü mümkün olan çözüm.</p>
+                    </div>
+                    
+                    <div class="problem-card">
+                        <h3>🔋 Problem: Yüksek Enerji Tüketimi</h3>
+                        <p>Dijital kasa sistemleri yüksek enerji tüketimi nedeniyle uzun süreli çalışamaz. Enerji bitiminde sistem devre dışı kalır.</p>
+                    </div>
+                    <div class="solution-card">
+                        <h3>⚡ LoopLock İnovasyonu</h3>
+                        <p>Uyku modlarıyla enerji minimizasyonu, uzun pil ömrü sağlayan tasarım. Harici güç desteği ile kesintisiz çalışma hedefliyoruz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Features -->
+        <div class="slide" id="slide-2">
+            <div class="content-slide">
+                <h2 class="slide-title">Hedeflenen Teknolojik Özellikler</h2>
+                <p class="slide-subtitle">Geliştirme sürecinde olan özelliklerimiz</p>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h3 class="feature-title">%85 Erken Tespit Hedefi</h3>
+                        <p>Darbe ve konum hareket algılayıcı sensörlerle hırsızlık girişimlerinin %85'ini erken tespit etmeyi hedefliyoruz</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3 class="feature-title">Çift Bağlantı Sistemi</h3>
+                        <p>GSM ve Wi-Fi desteği ile kesintisiz iletişim sağlayan, SMS, arama ve mobil veri bildirimleri gönderen sistem</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🏠</div>
+                        <h3 class="feature-title">Akıllı Ev Entegrasyonu</h3>
+                        <p>Mevcut akıllı ev sistemleriyle uyumlu çalışacak, merkezi kontrol altyapısına entegre edilebilecek tasarım</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🔐</div>
+                        <h3 class="feature-title">Çok Katmanlı Güvenlik</h3>
+                        <p>Şifreli erişim, dijital loglama, kullanıcı bazlı yetki kontrolü içeren güvenlik mimarisi</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3 class="feature-title">Optimize Güç Tüketimi</h3>
+                        <p>Uyku modları ile optimize edilmiş enerji kullanımı, uzun pil ömrü sağlayan tasarım</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">Mobil Uygulama</h3>
+                        <p>Kullanıcı dostu arayüz, gerçek zamanlı bildirimler, aktivite geçmişi içeren uygulama geliştiriyoruz</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Market Opportunity -->
+        <div class="slide" id="slide-3">
+            <div class="content-slide">
+                <h2 class="slide-title">Pazar Fırsatı</h2>
+                <p class="slide-subtitle">Büyüyen akıllı güvenlik pazarında öncü konuma geçme hedefimiz</p>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-number">1.5B₺</div>
+                        <div class="stat-label">Türkiye Akıllı Güvenlik Pazarı (2024)</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-number">%28</div>
+                        <div class="stat-label">Yıllık Büyüme Oranı (CAGR)</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-number">3.2B₺</div>
+                        <div class="stat-label">2030 Pazar Tahmini</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-number">%75</div>
+                        <div class="stat-label">Dijitalleşme Talebi</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 3rem; text-align: center;">
+                    <h3 style="color: #a0a0a0; margin-bottom: 2rem; font-size: 1.8rem;">Neden Şimdi?</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                        <div style="background: linear-gradient(135deg, rgba(128, 128, 128, 0.1), rgba(64, 64, 64, 0.1)); padding: 1.5rem; border-radius: 15px;">
+                            <strong style="color: #c0c0c0;">Early Stage Advantage</strong>
+                            <p style="color: #a0a0a0; margin-top: 0.5rem;">Pazarda erken giriş fırsatı</p>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(64, 64, 64, 0.1), rgba(128, 128, 128, 0.1)); padding: 1.5rem; border-radius: 15px;">
+                            <strong style="color: #909090;">Geliştirme Süreci</strong>
+                            <p style="color: #a0a0a0; margin-top: 0.5rem;">MVP geliştirme devam ediyor</p>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(96, 96, 96, 0.1), rgba(128, 128, 128, 0.1)); padding: 1.5rem; border-radius: 15px;">
+                            <strong style="color: #808080;">Büyüyen Pazar</strong>
+                            <p style="color: #a0a0a0; margin-top: 0.5rem;">%28 yıllık büyüme hızı</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 3rem;">
+                    <h3 style="color: #a0a0a0; margin-bottom: 2rem; font-size: 1.8rem;">Hedef Segmentler</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div style="background: rgba(26, 26, 26, 0.8); padding: 2rem; border-radius: 15px; border: 2px solid rgba(128, 128, 128, 0.2);">
+                            <h4 style="color: #c0c0c0; margin-bottom: 1rem;">🏢 Kurumsal Müşteriler</h4>
+                            <p>Bankalar, kuyumcular, büyük şirketler ve güvenlik şirketleri</p>
+                        </div>
+                        <div style="background: rgba(26, 26, 26, 0.8); padding: 2rem; border-radius: 15px; border: 2px solid rgba(128, 128, 128, 0.2);">
+                            <h4 style="color: #c0c0c0; margin-bottom: 1rem;">🏠 Bireysel Kullanıcılar</h4>
+                            <p>Yüksek gelirli ev sahipleri ve akıllı ev teknolojisi benimseyen kullanıcılar</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 4rem;">
+                    <button class="cta-button" style="font-size: 1.5rem; padding: 1.5rem 4rem;" onclick="scrollToSlide(5)">
+                        Yatırım Yapmaya Hazırım
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Business Model -->
+        <div class="slide" id="slide-4">
+            <div class="content-slide">
+                <h2 class="slide-title">Planlanan İş Modeli & Gelir Akışları</h2>
+                
+                <!-- Pricing Plans -->
+                <div class="pricing-section" style="margin: 3rem 0;">
+                    <h3 style="color: #a0a0a0; margin-bottom: 2rem; font-size: 1.8rem; text-align: center;">LoopLock Uygulama Abonelik Planları</h3>
+                    
+                    <div class="pricing-toggle" style="text-align: center; margin-bottom: 3rem;">
+                        <div style="display: inline-flex; background: rgba(26, 26, 26, 0.8); border-radius: 50px; padding: 0.5rem; border: 2px solid rgba(128, 128, 128, 0.2);">
+                            <button class="toggle-btn active" onclick="togglePricing('monthly')" style="background: linear-gradient(135deg, #808080, #606060); color: white; border: none; padding: 0.8rem 2rem; border-radius: 25px; cursor: pointer; transition: all 0.3s ease; font-weight: 600;">Aylık</button>
+                            <button class="toggle-btn" onclick="togglePricing('yearly')" style="background: transparent; color: #a0a0a0; border: none; padding: 0.8rem 2rem; border-radius: 25px; cursor: pointer; transition: all 0.3s ease; font-weight: 600;">Yıllık</button>
+                        </div>
+                        <div style="margin-top: 1rem; color: #c0c0c0; font-size: 0.9rem;">
+                            <span class="savings-badge" style="background: linear-gradient(135deg, #90c695, #70b675); color: #0a0a0a; padding: 0.3rem 1rem; border-radius: 15px; font-weight: 600; display: none;">%17 İndirim!</span>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 3rem;">
+                        <!-- Donanım Satışı -->
+                        <div class="business-card" onclick="showDetails('hardware')" style="background: linear-gradient(135deg, rgba(128, 128, 128, 0.1), rgba(64, 64, 64, 0.1)); padding: 2.5rem; border-radius: 20px; border: 2px solid rgba(128, 128, 128, 0.3); cursor: pointer; transition: all 0.3s ease;">
+                            <h3 style="color: #c0c0c0; margin-bottom: 1.5rem; font-size: 1.5rem;">💰 LoopLock Donanım</h3>
+                            <div class="price-display">
+                                <div style="font-size: 2.5rem; font-weight: 900; color: #c0c0c0; margin-bottom: 0.5rem;">9.500₺</div>
+                                <div style="color: #a0a0a0; margin-bottom: 1.5rem;">Hedeflenen fiyat (tek seferlik)</div>
+                            </div>
+                            <ul style="color: #a0a0a0; line-height: 2;">
+                                <li>✓ LoopLock akıllı kilit sistemi</li>
+                                <li>✓ Kontrol modülü ve tuş takımı</li>
+                                <li>✓ Darbe ve hareket sensörleri</li>
+                                <li>✓ GSM ve Wi-Fi modülleri</li>
+                                <li>✓ 1 yıl garanti</li>
+                            </ul>
+                            <div style="margin-top: 1.5rem;
